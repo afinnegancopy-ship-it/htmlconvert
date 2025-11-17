@@ -87,7 +87,7 @@ def split_products(paragraphs):
     return products
 
 # --- Streamlit App ---
-st.title("Word to HTML Excel Converter (Product Split by 10-digit ID)")
+st.title("Word to HTML Excel Converter")
 st.write("Upload a Word (.docx) file. Each product must start with a 10-digit number.")
 
 uploaded_file = st.file_uploader("Choose a Word document", type="docx")
@@ -128,3 +128,4 @@ if uploaded_file is not None:
 
     except Exception as e:
         st.error(f"❌ Error: {e}")
+
