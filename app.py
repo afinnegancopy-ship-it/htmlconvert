@@ -49,7 +49,7 @@ def paragraph_to_html(paragraph):
 
     strong_phrases = [
         "Description:", "How To Use:", "Set Contains:", 
-        "Key Notes:", "Fit & Fabric", "Product Details"
+        "Key Notes:", "Fit & Fabric", "Product Details", "Key Benefits"
     ]
 
     for run in paragraph.runs:
@@ -146,3 +146,4 @@ if uploaded_file:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
         st.success("Conversion complete!")
+
