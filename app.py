@@ -4,30 +4,68 @@ from openpyxl import Workbook
 import re
 from datetime import datetime
 from io import BytesIO
+from docx.oxml.ns import qn
 
-# === FUNCTIONS ===
+# ============================
+# Helper functions (same logic as your script)
+# ============================
+
+def run_is_bold(run):
+    if run.bold is True:
+        return True
+    if run.bold is None:
+        rPr = run._element.rPr
+        if rPr is not None and rPr.find(qn('w:b')) is not None:
+            return True
+    return False
+
+def paragraph_is_bold(paragraph):
+    if paragraph.style is not None:
+        if paragraph.style.font.bold is True:
+            return True
+    return False
+
+def is_bullet_paragraph(paragraph):
+    style_name = paragraph.style.name.lower()
+    if 'list' in style_name or 'bullet' in style_name or 'number' in style_name:
+        return True
+    if paragraph._p.pPr is not None and paragraph._p.pPr.numPr is not None:
+        return True
+    return False
+
 def paragraph_to_html(paragraph):
     html = ""
     text = paragraph.text.strip()
+
     manual_bullet_match = re.match(r'^[\u2022\u00B7\-]\s+(.*)', text)
-    
-    if paragraph.style.name.startswith('List') or manual_bullet_match:
+    is_bullet = is_bullet_paragraph(paragraph) or manual_bullet_match
+
+    if is_bullet:
         html += "<li>"
         if manual_bullet_match:
             text = manual_bullet_match.group(1)
     else:
         html += "<p>"
 
+    strong_phrases = [
+        "Description:", "How To Use:", "Set Contains:", 
+        "Key Notes:", "Fit & Fabric", "Product Details"
+    ]
+
     for run in paragraph.runs:
         run_text = run.text
-        if run.bold:
+        if run_is_bold(run) or paragraph_is_bold(paragraph):
             run_text = f"<b>{run_text}</b>"
+        for phrase in strong_phrases:
+            if phrase in run_text:
+                run_text = run_text.replace(phrase, f"<strong>{phrase}</strong>")
         html += run_text
 
-    if paragraph.style.name.startswith('List') or manual_bullet_match:
+    if is_bullet:
         html += "</li>"
     else:
         html += "</p>"
+
     return html
 
 def docx_to_html_blocks(docx_file):
@@ -39,8 +77,7 @@ def docx_to_html_blocks(docx_file):
 
     for para in doc.paragraphs:
         text = para.text.strip()
-        # Match a ten-digit number as product ID
-        if re.fullmatch(r'\d{10}', text):
+        if re.fullmatch(r'\d{8,}', text):
             if current_id and current_html:
                 if inside_list:
                     current_html.append("</ul>")
@@ -50,7 +87,7 @@ def docx_to_html_blocks(docx_file):
             current_id = text
         else:
             manual_bullet_match = re.match(r'^[\u2022\u00B7\-]\s+', text)
-            is_bullet = para.style.name.startswith('List') or manual_bullet_match
+            is_bullet = is_bullet_paragraph(para) or manual_bullet_match
 
             if is_bullet and not inside_list:
                 current_html.append("<ul>")
@@ -77,32 +114,35 @@ def export_to_excel(data):
     for key, value in data.items():
         ws.append([key, value])
 
-    # Save workbook to BytesIO for Streamlit download
-    output = BytesIO()
-    wb.save(output)
-    output.seek(0)
-    return output
+    # Save to BytesIO for Streamlit download
+    excel_io = BytesIO()
+    wb.save(excel_io)
+    excel_io.seek(0)
+    return excel_io
 
-# === STREAMLIT APP ===
-st.title("Word to HTML Exporter")
-st.write("Upload a Word (.docx) file to convert its contents into HTML with proper <b> and <li> tags, separated by 10-digit product IDs.")
+# ============================
+# Streamlit UI
+# ============================
 
-uploaded_file = st.file_uploader("Choose a Word document", type="docx")
+st.title("Word to HTML Excel Converter")
+st.write("Upload a Word document (.docx) and convert its content into HTML blocks inside an Excel file.")
+
+uploaded_file = st.file_uploader("Choose a Word (.docx) file", type=["docx"])
 
 if uploaded_file:
-    st.info("Processing your document...")
-    data = docx_to_html_blocks(uploaded_file)
-    
-    if data:
-        st.success(f"Found {len(data)} product IDs!")
-        excel_data = export_to_excel(data)
+    st.success(f"File uploaded: {uploaded_file.name}")
+    if st.button("Convert to Excel"):
+        with st.spinner("Converting..."):
+            html_data = docx_to_html_blocks(uploaded_file)
+            excel_file = export_to_excel(html_data)
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"html_export_{timestamp}.xlsx"
+        output_filename = f"{uploaded_file.name.split('.')[0]}_{timestamp}.xlsx"
+
         st.download_button(
-            label="Download Excel file",
-            data=excel_data,
-            file_name=filename,
+            label="Download Excel",
+            data=excel_file,
+            file_name=output_filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-    else:
-        st.warning("No product IDs found. Make sure your Word document contains 10-digit numbers as IDs.")
+        st.success("Conversion complete!")
