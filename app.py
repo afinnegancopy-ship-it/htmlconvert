@@ -51,7 +51,7 @@ def paragraph_to_html(paragraph):
         "Description:", "How To Use:", "Set Contains:", 
         "Key Notes:", "Fit & Fabric", "Product Details", "Key Benefits", "Designed for Casual", 
         "Designed for Yoga", "Support Level", "Designed for On the Move", "Designed for Yoga and On the Move", 
-        "Designed for Training", "Designed for Running"
+        "Designed for Training", "Designed for Running", "Key Features"
 
     ]
 
@@ -149,6 +149,7 @@ if uploaded_file:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
         st.success("Conversion complete!")
+
 
 
 
