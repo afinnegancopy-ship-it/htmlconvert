@@ -128,7 +128,7 @@ def export_to_excel(data):
 # ============================
 
 st.title("Word to HTML Excel Converter")
-st.write("Upload a Word document (.docx) and convert its content into HTML blocks inside an Excel file.")
+st.write("Upload a Word document")
 
 uploaded_file = st.file_uploader("Choose a Word (.docx) file", type=["docx"])
 
@@ -143,12 +143,13 @@ if uploaded_file:
         output_filename = f"{uploaded_file.name.split('.')[0]}_{timestamp}.xlsx"
 
         st.download_button(
-            label="Download Excel",
+            label="Download Excel Conversion",
             data=excel_file,
             file_name=output_filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
         st.success("Conversion complete!")
+
 
 
 
