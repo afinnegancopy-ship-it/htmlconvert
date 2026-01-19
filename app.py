@@ -13,7 +13,7 @@ from docx.oxml.ns import qn
 # =====================================================
 
 st.set_page_config(
-    page_title="Document Converter",
+    page_title="HTML Converter",
     page_icon="📄",
     layout="centered"
 )
@@ -464,3 +464,4 @@ st.markdown(
     "<p style='text-align: center; color: #000000; font-size: 0.85rem;'>Built with Streamlit</p>",
     unsafe_allow_html=True
 )
+
