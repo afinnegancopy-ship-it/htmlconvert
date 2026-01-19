@@ -19,13 +19,14 @@ st.set_page_config(
 )
 
 # =====================================================
-# CUSTOM CSS - Premium Dark Theme
+# CUSTOM CSS - White Background, Black Text
 # =====================================================
 
 st.markdown("""
 <style>
     .stApp {
-        background-color: #0d0d0d;
+        background-color: #ffffff;
+        color: #000000;
     }
     
     .main-header {
@@ -34,15 +35,23 @@ st.markdown("""
     }
     
     .main-header h1 {
-        color: #ffffff;
+        color: #000000;
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
     }
     
     .main-header p {
-        color: #a1a1aa;
+        color: #000000;
         font-size: 1.1rem;
+    }
+    
+    h1, h2, h3, h4, h5, h6, p, span, div, label {
+        color: #000000 !important;
+    }
+    
+    .stMarkdown {
+        color: #000000;
     }
     
     .stRadio > div {
@@ -52,12 +61,13 @@ st.markdown("""
     }
     
     .stRadio > div > label {
-        background-color: #1a1a1a;
+        background-color: #f5f5f5;
         padding: 0.75rem 1.5rem;
         border-radius: 12px;
-        border: 1px solid #2a2a2a;
+        border: 1px solid #e0e0e0;
         cursor: pointer;
         transition: all 0.2s;
+        color: #000000 !important;
     }
     
     .stRadio > div > label:hover {
@@ -66,7 +76,7 @@ st.markdown("""
     
     .stDownloadButton > button {
         background-color: #6366f1 !important;
-        color: white !important;
+        color: #ffffff !important;
         border: none !important;
         padding: 0.75rem 2rem !important;
         font-weight: 600 !important;
@@ -78,8 +88,12 @@ st.markdown("""
         background-color: #818cf8 !important;
     }
     
+    .stButton > button {
+        color: #ffffff !important;
+    }
+    
     .success-box {
-        background-color: #052e16;
+        background-color: #f0fdf4;
         border: 1px solid #22c55e;
         border-radius: 12px;
         padding: 1rem;
@@ -88,19 +102,31 @@ st.markdown("""
     }
     
     .success-box p {
-        color: #22c55e;
+        color: #16a34a !important;
         margin: 0;
     }
     
     div[data-testid="stFileUploader"] {
-        background-color: #141414;
-        border: 2px dashed #2a2a2a;
+        background-color: #f9f9f9;
+        border: 2px dashed #cccccc;
         border-radius: 16px;
         padding: 1rem;
     }
     
     div[data-testid="stFileUploader"]:hover {
         border-color: #6366f1;
+    }
+    
+    div[data-testid="stFileUploader"] label {
+        color: #000000 !important;
+    }
+    
+    .stAlert {
+        color: #000000;
+    }
+    
+    footer {
+        color: #000000 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -435,6 +461,6 @@ else:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #71717a; font-size: 0.85rem;'>Built with Streamlit</p>",
+    "<p style='text-align: center; color: #000000; font-size: 0.85rem;'>Built with Streamlit</p>",
     unsafe_allow_html=True
 )
