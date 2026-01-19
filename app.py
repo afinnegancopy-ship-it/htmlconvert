@@ -387,7 +387,7 @@ def excel_to_word(excel_file):
 # Header
 st.markdown("""
 <div class="main-header">
-    <h1>📄 Document Converter</h1>
+    <h1>📄 HTML Converter</h1>
     <p>Word ⟷ HTML ⟷ Excel</p>
 </div>
 """, unsafe_allow_html=True)
@@ -464,4 +464,5 @@ st.markdown(
     "<p style='text-align: center; color: #000000; font-size: 0.85rem;'>Built with Streamlit</p>",
     unsafe_allow_html=True
 )
+
 
